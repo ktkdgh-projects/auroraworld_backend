@@ -11,5 +11,5 @@ class User(models.Model):
     class Meta:
         db_table = 'user' 
 
-    def __str__(self):
-        return self.username
+def __str__(self):
+        return f"User(id={self.id}, username={self.username}, password={self.password}, salt={self.salt}, createdAt={self.createdAt}, updatedAt={self.updatedAt})"
