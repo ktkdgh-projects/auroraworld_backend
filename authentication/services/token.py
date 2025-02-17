@@ -1,18 +1,16 @@
-
-from django.utils import timezone
-import jwt
-from decouple import config
-from django.conf import settings
 from rest_framework.exceptions import AuthenticationFailed
+from django.utils import timezone
+from django.conf import settings
+from decouple import config
+import jwt
 
 class TokenService:
     @staticmethod
     def issue_access_token(id):
         expiration = timezone.localtime(timezone.now()) + settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME']        
-
         payload = {
             'type': 'access',
-            'sub': id,
+            'sub': str(id),
             'exp': expiration
         }
 
@@ -23,10 +21,11 @@ class TokenService:
     def issue_refresh_token(id):
         expiration = timezone.localtime(timezone.now()) + settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME']   
         payload = {
-            'type': 'access',
-            'sub': id,
+            'type': 'refresh',
+            'sub': str(id),
             'exp': expiration,
         }
+
         token = jwt.encode(payload, config('JWT_REFRESH_SECRET'), algorithm='HS256')
         return token
 
@@ -36,9 +35,10 @@ class TokenService:
             payload = jwt.decode(token, config('JWT_ACCESS_SECRET'), algorithms=['HS256'])
             return payload
         except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('엑세스 토큰이 만료되었습니다.')
+            raise AuthenticationFailed('액세스 토큰이 만료되었습니다.')
         except jwt.InvalidTokenError:
-            raise AuthenticationFailed('유효하지 않은 엑세스 토큰입니다.')
+            raise AuthenticationFailed('유효하지 않은 액세스 토큰입니다.')
+
 
     @staticmethod
     def verify_refresh_token(token):

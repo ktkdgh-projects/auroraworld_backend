@@ -14,8 +14,8 @@ class IsAuthenticatedCustom(BasePermission):
         except IndexError:
             raise AuthenticationFailed('Bearer 토큰 형식이 잘못되었습니다.')
 
-        user_info = TokenService.verify_access_token(token)
-        user = UserRepository.get_user_by_id(user_info['sub'])
+        payload = TokenService.verify_access_token(token)
+        user = UserRepository.get_user_by_id(payload['sub'])
 
         request.user = user
         return True
