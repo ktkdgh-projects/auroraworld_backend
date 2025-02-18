@@ -11,6 +11,5 @@ class BcryptService:
     @staticmethod
     def check_password(stored_password, input_password):
         input_password_bytes = input_password.encode('utf-8')
-        stored_password_bytes = stored_password.encode('utf-8')
-
-        return bcrypt.checkpw(input_password_bytes, stored_password_bytes)
+        
+        return bcrypt.checkpw(input_password_bytes, stored_password)
