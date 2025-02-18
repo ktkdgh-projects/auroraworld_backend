@@ -1,6 +1,5 @@
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from rest_framework import serializers
 
 class AuthSerializer(serializers.Serializer):
     username = serializers.CharField(

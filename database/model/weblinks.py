@@ -1,11 +1,10 @@
 from django.db import models
 
 CATEGORY_CHOICES = [
-    ('bookmark', 'Personal Bookmark'),
-    ('work', 'Work Materials'),
-    ('reference', 'Reference'),
-    ('education', 'Education & Learning'),
-    ('shared', 'Shared'),
+    ('favorites', '개인즐겨찾기'),
+    ('work', '업무 활용자료'),
+    ('reference', '참고자료'),
+    ('education', '교육 및 학습자료'),
 ]
 
 class WebLink(models.Model):

@@ -46,11 +46,12 @@ INSTALLED_APPS = [
 
     'database',
     'authentication',
+    'weblinks'
 ]
 
 SIMPLE_JWT = {
     # 'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=20),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=14),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
 }
 
