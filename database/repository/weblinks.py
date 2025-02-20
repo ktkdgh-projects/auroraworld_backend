@@ -1,5 +1,5 @@
 from rest_framework.exceptions import NotFound, ValidationError
-from django.db import IntegrityError
+from django.db.models import Q
 from ..model.weblinks import WebLink
 
 class WebLinkRepository:
@@ -29,3 +29,15 @@ class WebLinkRepository:
         except WebLink.DoesNotExist:
             raise NotFound(f"id: {id}에 해당하는 웹링크를 찾을 수 없습니다.")
 
+    @staticmethod
+    def get_weblink_by_created_by(created_by, keyword, category):
+        filter_conditions = Q(created_by=created_by)
+
+        if keyword:
+            filter_conditions &= Q(name__icontains=keyword)
+        
+        if category: 
+            filter_conditions &= Q(category=category)
+
+        weblinks = WebLink.objects.filter(filter_conditions)
+        return weblinks

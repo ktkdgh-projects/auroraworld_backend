@@ -5,6 +5,7 @@ from rest_framework import status
 from authentication.permissions import IsAuthenticatedCustom
 from .serializers import WeblinkCreateSerializer, WeblinkUpdateSerializer, WeblinkDeleteSerializer
 from .services.weblink import WebLinkService
+from .services.search import SearchService
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticatedCustom])
@@ -44,3 +45,12 @@ def delete_weblink(request):
         return Response({'message': '웹링크가 성공적으로 삭제되었습니다.'}, status.HTTP_200_OK)
     except Exception as e: 
         raise e
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedCustom])
+def search_weblink(request):
+    category = request.GET.get('category')
+    keyword = request.GET.get('keyword')
+    
+    response = SearchService.get_weblink(category, keyword, request.user)
+    return Response(response, status.HTTP_200_OK)

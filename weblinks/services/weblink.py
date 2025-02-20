@@ -18,13 +18,15 @@ class WebLinkService:
 
         WebLinkRepository.create_weblink(inputdata)
 
-    # 추후 웹링크공유 권한 관련 추가예정
     @staticmethod
     def can_user_edit_weblink(data, user):
         weblink_info = WebLinkRepository.get_weblink_by_id(data.get('weblink_id'))
-        if weblink_info.created_by.id == user.id:
+
+        if weblink_info.created_by.id == user.id or ShareRepository.get_share_by_user_with_weblink(user, weblink_info).permission == 'write':
             return WebLinkService.__update_weblink(data, weblink_info)
-    
+        
+        raise ValidationError('공유된 웹링크를 변경할 권한이 없습니다.')
+
     @staticmethod
     def __update_weblink(data, weblink_info):
         new_image_url = ImageUrlService.generate_image_url(data.get('url')) if data.get('url') != weblink_info.url else weblink_info.image_url

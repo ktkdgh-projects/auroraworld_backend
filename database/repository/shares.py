@@ -1,5 +1,5 @@
-from rest_framework.exceptions import NotFound, ValidationError
-from django.db import IntegrityError
+from rest_framework.exceptions import NotFound
+from django.db.models import Q
 from ..model.shares import Share
 
 class ShareRepository:
@@ -10,3 +10,16 @@ class ShareRepository:
             return share
         except Share.DoesNotExist:
             raise NotFound(f"해당하는 웹링크 공유를 찾을 수 없습니다.")
+
+    @staticmethod
+    def get_share_by_shared_with_user(shared_with_user, keyword, category):
+        filter_conditions = Q(shared_with_user=shared_with_user)
+        
+        if keyword:
+            filter_conditions &= Q(shared_by_weblink__name__icontains=keyword)
+
+        if category:
+            filter_conditions &= Q(shared_by_weblink__category=category)
+
+        shares = Share.objects.filter(filter_conditions)
+        return shares
