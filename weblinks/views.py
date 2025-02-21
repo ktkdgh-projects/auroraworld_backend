@@ -6,6 +6,7 @@ from authentication.permissions import IsAuthenticatedCustom
 from .serializers import WeblinkCreateSerializer, WeblinkUpdateSerializer, WeblinkDeleteSerializer
 from .services.weblink import WebLinkService
 from .services.search import SearchService
+from .services.share import ShareService
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticatedCustom])
@@ -54,3 +55,47 @@ def search_weblink(request):
     
     response = SearchService.get_weblink(category, keyword, request.user)
     return Response(response, status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedCustom])
+def search_share_user(request):
+    weblink_id = request.GET.get('weblinkId')
+
+    response = SearchService.search_share_user(weblink_id, request.user)
+    return Response(response, status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedCustom])
+def search_user(request):
+    keyword = request.GET.get('keyword')
+
+    response = SearchService.search_user(keyword, request.user)
+    return Response(response, status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticatedCustom])
+def create_share(request):
+    try:
+        ShareService.create_share(request.data, request.user)
+        return Response({'message': '웹링크 공유가 성공적으로 추가되었습니다.'}, status.HTTP_201_CREATED)
+    except Exception as e: 
+        raise e
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticatedCustom])
+def update_share(request):
+    try:
+        ShareService.update_share(request.data, request.user)
+        return Response({'message': '웹링크 공유가 성공적으로 변경되었습니다.'}, status.HTTP_200_OK)
+    except Exception as e: 
+        raise e
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticatedCustom])
+def delete_share(request):
+    try:
+        ShareService.delete_share(request.data, request.user)
+        return Response({'message': '웹링크 공유가 성공적으로 삭제되었습니다.'}, status.HTTP_200_OK)
+    except Exception as e: 
+        raise e

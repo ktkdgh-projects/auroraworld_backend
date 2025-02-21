@@ -1,5 +1,7 @@
 from database.repository.weblinks import WebLinkRepository
+from rest_framework.exceptions import ValidationError
 from database.repository.shares import ShareRepository
+from database.repository.users import UserRepository
 
 class SearchService:
     @staticmethod
@@ -56,3 +58,40 @@ class SearchService:
             return my_weblink_data + share_weblink_data
 
         return []
+
+    @staticmethod
+    def search_share_user(weblink_id, user):
+        share_user = ShareRepository.get_shares_by_weblink_id(weblink_id)
+
+        if share_user[0].shared_by_weblink.created_by.id != user.id:
+            raise ValidationError('웹링크 검색 권한이 없습니다.')
+
+        responseData = []
+        for user in share_user:
+            share_user_dict = {
+                "id": user.shared_with_user.id,
+                "username": user.shared_with_user.username,
+                "permission": user.permission,
+            }
+            responseData.append(share_user_dict)
+            
+        return responseData
+    
+    @staticmethod
+    def search_user(keyword, user):
+        users = UserRepository.get_user_by_keyword(keyword)
+
+        responseData = []
+        for other_user in users:
+            if other_user.id == user.id:
+                continue
+
+            user_dict = {
+                "id": other_user.id,
+                "username": other_user.username,
+                "permission": "read",
+            }
+            responseData.append(user_dict)
+            
+        return responseData
+

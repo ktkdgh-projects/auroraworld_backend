@@ -41,3 +41,10 @@ class WebLinkRepository:
 
         weblinks = WebLink.objects.filter(filter_conditions)
         return weblinks
+
+    @staticmethod
+    def update_weblink_by_shared(id, shared):
+        result = WebLink.objects.filter(id=id).update(shared=shared) 
+
+        if not result:
+            raise ValidationError("웹링크 변경이 실패했습니다.")

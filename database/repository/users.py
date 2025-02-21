@@ -1,4 +1,6 @@
 from rest_framework.exceptions import NotFound, ValidationError
+from django.db.models import Q
+
 from ..model.users import User
 from django.db import IntegrityError
 
@@ -47,3 +49,11 @@ class UserRepository:
 
         if not result:
             raise ValidationError("refresh_token 초기화에 실패했습니다.")
+        
+    @staticmethod
+    def get_user_by_keyword(keyword):
+        if keyword:
+            filter_conditions = Q(username__icontains=keyword)
+        
+        weblinks = User.objects.filter(filter_conditions)
+        return weblinks
